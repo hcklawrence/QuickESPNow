@@ -365,7 +365,7 @@ void QuickEspNow::espnowRxTask_cb (void* param) {
     }
 }
 
-void QuickEspNow::rx_cb (uint8_t* mac_addr, uint8_t* data, uint8_t len) {
+void QuickEspNow::rx_cb (const esp_now_recv_info_t* info, uint8_t* data, uint8_t len) {
     espnow_frame_format_t* espnow_data = (espnow_frame_format_t*)(data - sizeof (espnow_frame_format_t));
     wifi_promiscuous_pkt_t* promiscuous_pkt = (wifi_promiscuous_pkt_t*)(data - sizeof (wifi_pkt_rx_ctrl_t) - sizeof (espnow_frame_format_t));
     wifi_pkt_rx_ctrl_t* rx_ctrl = &promiscuous_pkt->rx_ctrl;
@@ -374,6 +374,7 @@ void QuickEspNow::rx_cb (uint8_t* mac_addr, uint8_t* data, uint8_t len) {
 
     DEBUG_DBG (QESPNOW_TAG, "Received message with RSSI %d from " MACSTR " Len: %u", rx_ctrl->rssi, MAC2STR (mac_addr), len);
 
+    uint8_t *mac_addr = info->src_addr;
     memcpy (message.srcAddress, mac_addr, ESP_NOW_ETH_ALEN);
     memcpy (message.payload, data, len);
     message.payload_len = len;
