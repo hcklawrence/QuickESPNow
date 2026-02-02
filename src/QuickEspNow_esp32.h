@@ -160,7 +160,7 @@ protected:
     void espnowRxHandle ();
 
     static void ICACHE_FLASH_ATTR rx_cb (const esp_now_recv_info_t* info, uint8_t* data, uint8_t len);
-    static void ICACHE_FLASH_ATTR tx_cb (uint8_t* mac_addr, uint8_t status);
+    static void ICACHE_FLASH_ATTR tx_cb (const esp_now_send_info_t* info, uint8_t status);
 };
 
 extern QuickEspNow quickEspNow;

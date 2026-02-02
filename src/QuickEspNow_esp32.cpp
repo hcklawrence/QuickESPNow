@@ -374,8 +374,7 @@ void QuickEspNow::rx_cb (const esp_now_recv_info_t* info, uint8_t* data, uint8_t
 
     DEBUG_DBG (QESPNOW_TAG, "Received message with RSSI %d from " MACSTR " Len: %u", rx_ctrl->rssi, MAC2STR (mac_addr), len);
 
-    uint8_t *mac_addr = info->src_addr;
-    memcpy (message.srcAddress, mac_addr, ESP_NOW_ETH_ALEN);
+    memcpy (message.srcAddress, info->src_addr, ESP_NOW_ETH_ALEN);
     memcpy (message.payload, data, len);
     message.payload_len = len;
     message.rssi = rx_ctrl->rssi;
@@ -395,13 +394,13 @@ void QuickEspNow::rx_cb (const esp_now_recv_info_t* info, uint8_t* data, uint8_t
     }
 }
 
-void QuickEspNow::tx_cb (uint8_t* mac_addr, uint8_t status) {
+void QuickEspNow::tx_cb (const esp_now_send_info_t* info, uint8_t status) {
     quickEspNow.readyToSend = true;
     quickEspNow.sentStatus = status;
     quickEspNow.waitingForConfirmation = false;
     DEBUG_DBG (QESPNOW_TAG, "-------------- Ready to send: true. Status: %d", status);
     if (quickEspNow.sentResult) {
-        quickEspNow.sentResult (mac_addr, status);
+        quickEspNow.sentResult (info->des_addr, status);
     }
 }
 
